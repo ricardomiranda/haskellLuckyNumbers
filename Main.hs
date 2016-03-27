@@ -1,5 +1,6 @@
 import System.Environment
 import System.Exit
+import Data.Char
 
 data Lucky = Lucky | EvenLucky 
 
@@ -31,11 +32,19 @@ lucky xs =
 main :: IO ()
 main = do
   args <- getArgs
-  if null args
-    then do
-      print "Invalid input, missing arguments"
-      exitWith ExitSuccess
-    else 
-      let l = lucky args in do
-        print (nth (read (head args) :: Int) l)
+  let numArgs = filter (all isDigit) args in
+    if null numArgs
+      then do
+        print "Invalid input, missing arguments"
         exitWith ExitSuccess
+      else 
+        let l = lucky args in case length numArgs of
+	  1 -> do
+            print (nth (read (head args) :: Int) l)
+            exitWith ExitSuccess
+          2 -> do 
+            print (nth (read (head args) :: Int) l)
+            exitWith ExitSuccess
+          otherwise -> do 
+            print "Invalid input, wrong number of arguments"
+            exitWith ExitSuccess
