@@ -81,20 +81,20 @@ main = do
           then do
             print "Invalid input, missing arguments"
             print "Type --help"
-            exitWith ExitSuccess
+            exitSuccess
           else 
             let l = lucky args in case length numArgs of
               1 -> do
                 print (nth (head numArgs) l)
-                exitWith ExitSuccess
+                exitSuccess
               2 -> if last numArgs > 0
                 then do
                   print (range (head numArgs) (last numArgs) l)
-                  exitWith ExitSuccess
+                  exitSuccess
                 else do
                   print (interval (head numArgs) (last numArgs) l)
-                  exitWith ExitSuccess
+                  exitSuccess
               _ -> do 
                 print "Invalid input, wrong number of arguments"
                 print "Type --help"
-                exitWith ExitSuccess
+                exitSuccess
