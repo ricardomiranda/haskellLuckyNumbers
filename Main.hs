@@ -94,7 +94,7 @@ main = do
                 else do
                   print (interval (head numArgs) (last numArgs) l)
                   exitWith ExitSuccess
-              otherwise -> do 
+              _ -> do 
                 print "Invalid input, wrong number of arguments"
                 print "Type --help"
                 exitWith ExitSuccess
