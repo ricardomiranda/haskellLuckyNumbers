@@ -53,9 +53,9 @@ interval :: Int -> Int -> Lucky -> [Int]
 interval x x2 l = let x'' = (-1 * x2) in
   case l of
     Lucky -> let n = length (takeWhile (<x) (luckyNumbers oddNumbers)) in
-      drop (n) (takeWhile (<=x'') (luckyNumbers oddNumbers))
+      drop n (takeWhile (<=x'') (luckyNumbers oddNumbers))
     EvenLucky -> let n = length (takeWhile (<x) (luckyNumbers evenNumbers)) in
-      drop (n) (takeWhile (<=x'') (luckyNumbers evenNumbers))
+      drop n (takeWhile (<=x'') (luckyNumbers evenNumbers))
 
 lucky :: [String] -> Lucky
 lucky xs = 
