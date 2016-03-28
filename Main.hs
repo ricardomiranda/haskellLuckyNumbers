@@ -5,6 +5,24 @@ import Text.Regex.Posix
 
 data Lucky = Lucky | EvenLucky 
 
+helpMessage :: IO ()
+helpMessage = do
+  putStrLn "                           what is displayed  (on a single line)"
+  putStrLn "     argument(s)              (optional verbiage is encouraged)"
+  putStrLn "======================|==================================================="
+  putStrLn " j                    | Jth       lucky number                            "
+  putStrLn " j  ,          lucky  | Jth       lucky number                            "
+  putStrLn " j  ,      evenLucky  | Jth  even lucky number                            "
+  putStrLn "                                                                          "
+  putStrLn " j  k                 | Jth  through  Kth (inclusive)       lucky numbers "
+  putStrLn " j  k          lucky  | Jth  through  Kth (inclusive)       lucky numbers "
+  putStrLn " j  k      evenlucky  | Jth  through  Kth (inclusive)  even lucky numbers "
+  putStrLn "                                                                          "
+  putStrLn " j -k                 | all       lucky numbers in the range  j -> |k|    "
+  putStrLn " j -k          lucky  | all       lucky numbers in the range  j -> |k|    "
+  putStrLn " j -k      evenlucky  | all  even lucky numbers in the range  j -> |k|    "
+  putStrLn "======================|==================================================="
+
 oddNumbers :: [Int]
 oddNumbers = filter odd [1..]
 
@@ -54,23 +72,29 @@ isInt s = length (s =~ "-?[0-9]{0,10}" :: String) > 0
 main :: IO ()
 main = do
   args <- getArgs
-  let numArgs = map readn (filter isInt args) in
-    if null numArgs
-      then do
-        print "Invalid input, missing arguments"
-        exitWith ExitSuccess
-      else 
-        let l = lucky args in case length numArgs of
-	  1 -> do
-            print (nth (head numArgs) l)
+  if head args == "--help" || null args
+    then
+      helpMessage
+    else
+      let numArgs = map readn (filter isInt args) in
+        if null numArgs
+          then do
+            print "Invalid input, missing arguments"
+            print "Type --help"
             exitWith ExitSuccess
-          2 -> if last numArgs > 0
-            then do
-              print (range (head numArgs) (last numArgs) l)
-              exitWith ExitSuccess
-            else do
-              print (interval (head numArgs) (last numArgs) l)
-              exitWith ExitSuccess
-          otherwise -> do 
-            print "Invalid input, wrong number of arguments"
-            exitWith ExitSuccess
+          else 
+            let l = lucky args in case length numArgs of
+              1 -> do
+                print (nth (head numArgs) l)
+                exitWith ExitSuccess
+              2 -> if last numArgs > 0
+                then do
+                  print (range (head numArgs) (last numArgs) l)
+                  exitWith ExitSuccess
+                else do
+                  print (interval (head numArgs) (last numArgs) l)
+                  exitWith ExitSuccess
+              otherwise -> do 
+                print "Invalid input, wrong number of arguments"
+                print "Type --help"
+                exitWith ExitSuccess
