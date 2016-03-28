@@ -43,14 +43,14 @@ nth j l = case l of
   EvenLucky -> last (take j (luckyNumbers evenNumbers))
 
 range :: Int -> Int -> Lucky -> [Int]
-range x x' l = case l of
+range x x2 l = case l of
     Lucky -> let n = length (take x (luckyNumbers oddNumbers)) in
-      drop (n-1) (take x' (luckyNumbers oddNumbers))
+      drop (n-1) (take x2 (luckyNumbers oddNumbers))
     EvenLucky -> let n = length (take x (luckyNumbers evenNumbers)) in
-      drop (n-1) (take x' (luckyNumbers evenNumbers))
+      drop (n-1) (take x2 (luckyNumbers evenNumbers))
 
 interval :: Int -> Int -> Lucky -> [Int]
-interval x x' l = let x'' = (-1 * x') in
+interval x x2 l = let x'' = (-1 * x2) in
   case l of
     Lucky -> let n = length (takeWhile (<x) (luckyNumbers oddNumbers)) in
       drop (n-1) (takeWhile (<x'') (luckyNumbers oddNumbers))
@@ -59,7 +59,7 @@ interval x x' l = let x'' = (-1 * x') in
 
 lucky :: [String] -> Lucky
 lucky xs = 
-  if (not (null (filter (== "evenLucky") xs)))
+  if "evenLucky" `elem` xs
    then EvenLucky
    else Lucky
 
@@ -67,7 +67,7 @@ readn :: String -> Int
 readn s = read s :: Int
 
 isInt :: String -> Bool
-isInt s = length (s =~ "-?[0-9]{0,10}" :: String) > 0
+isInt s = not (null (s =~ "-?[0-9]{0,10}" :: String))
 
 main :: IO ()
 main = do
