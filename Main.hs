@@ -1,7 +1,6 @@
-module Main (main) where
+module Main where
 
 import System.Environment
-import System.Exit
 import Text.Regex.Posix
 
 data Lucky = Lucky | EvenLucky 
@@ -39,24 +38,16 @@ luckyNumbers xs =
         ln : sieve (i + 1) (s : [x | (n, x) <- zip [i..] xs, rem n s /= 0])
 
 nth :: Int -> Lucky -> Int
-nth j l = case l of 
-  Lucky -> last (take j (luckyNumbers oddNumbers))
-  EvenLucky -> last (take j (luckyNumbers evenNumbers))
+nth j Lucky     = luckyNumbers oddNumbers !! (j-1)
+nth j EvenLucky = luckyNumbers evenNumbers !! (j-1)
 
 range :: Int -> Int -> Lucky -> [Int]
-range x x2 l = case l of
-    Lucky -> let n = length (take x (luckyNumbers oddNumbers)) in
-      drop (n-1) (take x2 (luckyNumbers oddNumbers))
-    EvenLucky -> let n = length (take x (luckyNumbers evenNumbers)) in
-      drop (n-1) (take x2 (luckyNumbers evenNumbers))
+range x x2 Lucky     = drop (x-1) (take x2 (luckyNumbers oddNumbers))
+range x x2 EvenLucky = drop (x-1) (take x2 (luckyNumbers evenNumbers))
 
 interval :: Int -> Int -> Lucky -> [Int]
-interval x x2 l = let x'' = (-1 * x2) in
-  case l of
-    Lucky -> let n = length (takeWhile (<x) (luckyNumbers oddNumbers)) in
-      drop n (takeWhile (<=x'') (luckyNumbers oddNumbers))
-    EvenLucky -> let n = length (takeWhile (<x) (luckyNumbers evenNumbers)) in
-      drop n (takeWhile (<=x'') (luckyNumbers evenNumbers))
+interval x x2 Lucky     = dropWhile (<x) (takeWhile (<=x2) (luckyNumbers oddNumbers))
+interval x x2 EvenLucky = dropWhile (<x) (takeWhile (<=x2) (luckyNumbers evenNumbers))
 
 lucky :: [String] -> Lucky
 lucky xs = 
@@ -77,25 +68,15 @@ main = do
     then
       helpMessage
     else
-      let numArgs = map readn (filter isInt args) in
-        if null numArgs
-          then do
-            print "Invalid input, missing arguments"
-            print "Type --help"
-            exitSuccess
-          else 
-            let l = lucky args in case length numArgs of
-              1 -> do
-                print (nth (head numArgs) l)
-                exitSuccess
-              2 -> if last numArgs > 0
-                then do
-                  print (range (head numArgs) (last numArgs) l)
-                  exitSuccess
-                else do
-                  print (interval (head numArgs) (last numArgs) l)
-                  exitSuccess
-              _ -> do 
-                print "Invalid input, wrong number of arguments"
-                print "Type --help"
-                exitSuccess
+      let l = lucky args in
+      case map readn (filter isInt args) of
+        [] -> do
+          putStrLn "Invalid input, missing arguments"
+          putStrLn "Type --help"
+        [x] -> print (nth x l)
+        [x, x2] -> if x2 > 0
+          then print (range x x2 l)
+          else print (interval x (-x2) l)
+        _ -> do 
+          putStrLn "Invalid input, wrong number of arguments"
+          putStrLn "Type --help"
